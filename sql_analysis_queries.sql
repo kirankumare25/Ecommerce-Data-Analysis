@@ -113,3 +113,11 @@ FROM
     orders
 GROUP BY category
 ORDER BY revenue_per_order DESC;
+
+
+-- Monthly Revenue Growth
+WITH revenue_by_month AS (SELECT order_month , Round(SUM(amount) ) AS revenue, LAG(ROUND(SUM(amount)), 1, 0) OVER(ORDER BY order_month) AS previous_month FROM orders GROUP BY order_month)
+SELECT * , (revenue - pmonth) / pmonth * 100 AS revenue_growth
+FROM revenue_by_month
+ORDER BY order_month;
+
